@@ -25,6 +25,8 @@ public class APathfinding : MonoBehaviour
     [Tooltip("Number out of 100 for probability.")]
     [SerializeField] private float obstacleProbability = 25f;
 
+    public Vector2Int newObstacle = new Vector2Int(0, 0);
+
     private int[,] grid = new int[,]
     {
         { 0, 1, 0, 0, 0 },
@@ -37,7 +39,6 @@ public class APathfinding : MonoBehaviour
 
         { 0, 0, 0, 0, 0 }
     };
-
     private void Start()
     {
         GenerateRandomGrid(width, height, obstacleProbability);
@@ -281,5 +282,36 @@ public class APathfinding : MonoBehaviour
 
         //Debug.Log("Out of range!");
         return false;
+    }
+
+    public void UIAddObstacle()
+    {
+        AddObstacle(newObstacle);
+    }
+
+
+
+    public void AddObstacle(Vector2Int position)
+    {
+        if(GridCheck(grid, position.x, position.y))
+        {
+            if (start == new Vector2Int(position.x, position.y))
+            {
+                Debug.LogError("Attempting to place an obstacle over the start position!");
+            }
+            else if (goal == new Vector2Int(position.x, position.y))
+            {
+                Debug.LogError("Attempting to place an obstacle over the goal position!");
+            }
+            else
+            {
+                grid[position.x, position.y] = 1;
+                FindPath(start, goal);
+            }
+        }
+        else
+        {
+            Debug.LogError("Invalid grid position entered!");
+        }
     }
 }
